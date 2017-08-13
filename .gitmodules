@@ -1,0 +1,6 @@
+[submodule "projects/searchTool/lib/hiredis"]
+	path = projects/searchTool/lib/hiredis
+	url = https://github.com/redis/hiredis.git
+[submodule "blog-backup/themes/next"]
+	path = blog-backup/themes/next
+	url = https://github.com/iissnan/hexo-theme-next.git
