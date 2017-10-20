@@ -2,7 +2,7 @@
 #include "MIH.h"
 #include "redisManager.h"
 #include "linscan.h"
-
+#include <stdexcept>
 #include <bitset>
 #include <cstdlib>
 #include <sstream>

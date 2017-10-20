@@ -4,7 +4,7 @@
 #include <hiredis/hiredis.h>
 #include <string>
 #include <vector>
-#include "common/SpinLock.h"
+#include "SpinLock.h"
 
 class RedisManager
 {

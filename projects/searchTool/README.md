@@ -49,8 +49,7 @@ All hash codes.
 ## Compile
 
 ```bash
-$ git submodule update
-$ git submodule init
+$ git submodule update --init
 $ mkdir build
 $ cd build
 $ cmake ..
