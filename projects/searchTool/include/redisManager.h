@@ -4,6 +4,7 @@
 #include <hiredis/hiredis.h>
 #include <string>
 #include <vector>
+#include "common/SpinLock.h"
 
 class RedisManager
 {
@@ -57,6 +58,7 @@ class RedisManager
     redisContext *pRedisCtx;
     std::string hostname;
     int port;
+    dev::SpinLock mtx;
 };
 
 #endif //REDIS_MANAGER_H
