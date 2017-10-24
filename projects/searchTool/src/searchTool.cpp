@@ -305,20 +305,35 @@ bool SearchTool::queryPerson(vector<float> feature, string &id, string &path, fl
 
 list<PersonInfo> SearchTool::getAllPersonInfo()
 {
-    vector<pair<string, string>> res = redis->hash_getAll(person_info_key.c_str());
+    // vector<pair<string, string>> res = redis->hash_getAll(person_info_key.c_str());
+    map<string, string> res = redis->hash_getAllOrdered(person_info_key.c_str());
     list<PersonInfo> result_list;
     if (res.size() < 2)
         return result_list;
     PersonInfo info;
-    size_t nums = personCount();
-    for (size_t j = 0; j < nums; ++j)
+    // size_t nums = personCount();
+    // for (size_t j = 0; j < nums; ++j)
+    // {
+    //     info.id = res[j * 4].second;
+    //     info.name = res[j * 4 + 1].second;
+    //     info.sex = res[j * 4 + 2].second;
+    //     info.timestamp = res[j * 4 + 3].second;
+    // }
+
+    auto it = res.begin();
+    for (size_t j = 0; j < res.size(); j+=4)
     {
-        info.id = res[j * 4].second;
-        info.name = res[j * 4 + 1].second;
-        info.sex = res[j * 4 + 2].second;
-        info.timestamp = res[j * 4 + 3].second;
+        info.id = it->second;
+        ++it;
+        info.name = it->second;
+        ++it;        
+        info.sex = it->second;
+        ++it;
+        info.timestamp = it->second;
+        ++it;
         result_list.push_back(info);
     }
+
     return result_list;
 }
 

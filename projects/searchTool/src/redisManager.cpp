@@ -366,6 +366,24 @@ vector<pair<string, string>> RedisManager::hash_getAll(const char *hashkey)
     return res;
 }
 
+std::map<std::string, std::string> RedisManager::hash_getAllOrdered(const char *hashkey)
+{
+    mtx.lock();
+    redisReply *replay = (redisReply *)redisCommand(pRedisCtx, "hgetall %s", hashkey);
+    mtx.unlock();
+    std::map<std::string, std::string> res;
+    if (replay)
+    {
+        if (replay->type == REDIS_REPLY_ARRAY)
+            for (unsigned i = 0; i < replay->elements; i += 2)
+            {
+                res[string(replay->element[i]->str)]=string(replay->element[i + 1]->str, replay->element[i + 1]->len);
+            }
+    }
+    freeReplyObject(replay);
+    return res;
+}
+
 // binary safe api
 
 //set operate binary safe api
