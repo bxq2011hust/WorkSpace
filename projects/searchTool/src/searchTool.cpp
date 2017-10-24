@@ -6,6 +6,10 @@
 #include <bitset>
 #include <cstdlib>
 #include <sstream>
+#include "boost/serialization/serialization.hpp"
+#include "boost/archive/binary_oarchive.hpp"
+#include "boost/archive/binary_iarchive.hpp"
+#include "boost/serialization/vector.hpp"
 // #include <iostream>//only for debug
 using namespace std;
 
@@ -116,29 +120,21 @@ string SearchTool::codeToBinaryString(string &code)
 }
 
 // convert float[] to string
-string SearchTool::featureToString(vector<float> &feature)
+string SearchTool::serialize(vector<float> &feature)
 {
     stringstream ss;
-    ss << fixed;
-    ss.precision(2);
-    for (auto num : feature)
-        ss << num << " ";
+    boost::archive::binary_oarchive oa(ss);
+    oa << feature;
     return ss.str();
 }
 
 // convert string to float[]
-inline vector<float> SearchTool::stringToFeature(string &value)
+inline vector<float> SearchTool::deserialize(string &value)
 {
-    // delete unuse space
-    stringstream ss(value.substr(1, value.size() - 2));
-    float tmp;
     vector<float> res;
-    res.reserve(bits);
-    for (int i = 0; i < bits; ++i)
-    {
-        ss >> tmp;
-        res.push_back(tmp);
-    }
+    stringstream ss(value);
+    boost::archive::binary_iarchive ia(ss);
+    ia >> res;
     return res;
 }
 
@@ -287,7 +283,7 @@ bool SearchTool::queryPerson(vector<float> feature, string &id, string &path, fl
                 {
                     face_key.push_back(key_value.first);
                     ids.push_back(key_value.first.substr(0, key_value.first.find("_")));
-                    features.push_back(move(stringToFeature(key_value.second)));
+                    features.push_back(move(deserialize(key_value.second)));
                 }
             }
         }
@@ -385,8 +381,7 @@ bool SearchTool::addFace(FaceImageInfo &info)
 
     redis->hash_increase(face_info_key.c_str(), count_key.c_str(), 1);
     // add to hash_key
-    string feat = featureToString(info.feature);
-    feat = string("\"") + feat + string("\"");
+    string feat = serialize(info.feature);
     key = getFeatureKey(info.id, count);
     redis->hash_set(hash_key.c_str(), B_over_8, key.c_str(), key.size(), feat.c_str(), feat.size());
 

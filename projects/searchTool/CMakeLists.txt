@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES ("${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/lib"
 
 # library config
 ADD_LIBRARY(searchtool SHARED src/searchTool.cpp src/redisManager.cpp ${HASH_SCAN_SRC} ${HIREDIS_SRC})
+target_link_libraries(searchtool boost_serialization)
 #ADD_LIBRARY(searchtool_static STATIC src/searchTool.cpp src/redisManager.cpp ${HASH_SCAN_SRC} ${HIREDIS_SRC})
 
 # config version soversion

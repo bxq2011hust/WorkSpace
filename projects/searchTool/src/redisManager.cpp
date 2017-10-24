@@ -19,7 +19,7 @@ RedisManager::~RedisManager()
 bool RedisManager::initRedisConnect(int ms)
 {
     struct timeval timeout = {0, ms};
-    mtx.lock();    
+    mtx.lock();
     if (pRedisCtx)
         redisFree(pRedisCtx);
 
@@ -36,7 +36,7 @@ bool RedisManager::initRedisConnect(int ms)
         }
         return false;
     }
-    mtx.unlock();    
+    mtx.unlock();
     return true;
 }
 
@@ -359,7 +359,7 @@ vector<pair<string, string>> RedisManager::hash_getAll(const char *hashkey)
         if (replay->type == REDIS_REPLY_ARRAY)
             for (unsigned i = 0; i < replay->elements; i += 2)
             {
-                res.push_back(pair<string, string>(replay->element[i]->str, replay->element[i + 1]->str));
+                res.push_back(make_pair(replay->element[i]->str, string(replay->element[i + 1]->str, replay->element[i + 1]->len)));
             }
     }
     freeReplyObject(replay);
@@ -501,7 +501,7 @@ vector<pair<string, string>> RedisManager::hash_getAll(const char *hashkey, size
         if (replay->type == REDIS_REPLY_ARRAY)
             for (unsigned i = 0; i < replay->elements; i += 2)
             {
-                res.push_back(pair<string, string>(replay->element[i]->str, replay->element[i + 1]->str));
+                res.push_back(make_pair(replay->element[i]->str, string(replay->element[i + 1]->str, replay->element[i + 1]->len)));
             }
     }
     freeReplyObject(replay);
