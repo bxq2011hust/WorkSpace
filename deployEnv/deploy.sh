@@ -1,11 +1,11 @@
 #!/bin/bash
-set e
+set -e
 
 COMPILE_VIM=false
 
 Config_VIM()
 {
-    if [ $COMPILE_VIM="true" ]
+    if [ "$COMPILE_VIM"=="true" ]
     then 
         echo "compile vim..."
         git clone git@github.com:vim/vim.git 
@@ -69,7 +69,6 @@ Config_Git()
     process = git-lfs filter-process --skip
     required = true
 [credential]
-    helper = cache
     helper = cache --timeout 36000
 [core]
     autocrlf = input
