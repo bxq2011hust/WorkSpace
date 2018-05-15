@@ -1,7 +1,7 @@
 /*********************************************************
 *   Copyright (C) 2017 All rights reserved.
 *   
-* File Name: SpinLock.h
+* File Name: spinLock.h
 * Purpose:
 * Creation Date: 2017-10-20
 * Created By: bxq2011hust@qq.com
@@ -15,6 +15,7 @@
 namespace dev
 {
 
+ /// @brief Spin lock
 class SpinLock
 {
     std::atomic<bool> flag = ATOMIC_VAR_INIT(false);
@@ -33,6 +34,6 @@ class SpinLock
     {
         flag.store(false, std::memory_order_release);
     }
-};
-}
+}; // class SpinLock
+} // namespace dev
 #endif //SPIN_LOCK_H_

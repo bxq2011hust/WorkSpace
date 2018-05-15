@@ -1,11 +1,11 @@
 #ifndef REDIS_MANAGER_H
 #define REDIS_MANAGER_H
 
-#include <hiredis/hiredis.h>
+#include "hiredis/hiredis.h"
 #include <string>
 #include <vector>
 #include <map>
-#include "SpinLock.h"
+#include "spinLock.h"
 
 class RedisManager
 {
