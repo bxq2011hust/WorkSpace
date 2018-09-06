@@ -28,10 +28,21 @@ Config_VIM()
 # Install software
 Config_ENV()
 {
-    sudo apt-get -y install build-essential tmux git zsh cmake
+    sudo apt-get update && sudo apt-get -y install build-essential git zsh cmake
     #install oh-my-zsh
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    sed -i sed "s#^ZSH_THEME=.*#ZSH_THEME=\"ys\"#g" ~/.zshrc
+    sed -i "s#^ZSH_THEME=.*#ZSH_THEME=\"ys\"#g" ~/.zshrc
+    cat << EOF >>.screenrc
+    altscreen on # vim残留
+
+    # 状态栏
+    hardstatus off
+    hardstatus alwayslastline
+    hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m-%d %{W} %c %{g}]'
+
+    # 256colo
+    term screen-256color
+EOF
 }
 
 Config_Python()
@@ -70,8 +81,10 @@ Config_Git()
     required = true
 [credential]
     helper = cache --timeout 36000
+    #helper = winstore
 [core]
     autocrlf = input
+    safecrlf = true
 EOF
 
 }
@@ -84,7 +97,7 @@ main()
     Config_Git
 
     # cp -a workspace/deployEnv/.tmux.conf $HOME/
-    # mkdir ~/git-repo && cd ~/git-repo && git clone https://github.com/bxq2011hust/vps-workspace.git
+    # mkdir ~/git-repo && cd ~/git-repo && git clone https://github.com/bxq2011hust/WorkSpace.git vps-workspace
     source .zshrc
 }
 
