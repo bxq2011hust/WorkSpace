@@ -81,7 +81,7 @@ Config_Git()
     required = true
 [credential]
     helper = cache --timeout 36000
-    #helper = winstore
+    #helper = wincred
 [core]
     autocrlf = input
     safecrlf = true
