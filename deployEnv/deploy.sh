@@ -69,9 +69,9 @@ Config_Python()
 Config_Git()
 {
     cat <<EOF > ~/.gitconfig
-# [user]
-# 	email = bxq2011hust@qq.com
-# 	name = bxq2011hust 
+[user]
+	email = bxq2011hust@qq.com
+	name = bxq2011hust 
 [push]
     default = simple
 [filter "lfs"]
@@ -83,6 +83,7 @@ Config_Git()
     helper = cache --timeout 36000
     #helper = wincred
 [core]
+    editor = vim
     autocrlf = input
     safecrlf = true
 EOF
