@@ -5,7 +5,7 @@ COMPILE_VIM=false
 
 Config_VIM()
 {
-    if [ "$COMPILE_VIM"=="true" ]
+    if [ "$COMPILE_VIM" == "true" ]
     then 
         echo "compile vim..."
         git clone git@github.com:vim/vim.git 
@@ -28,7 +28,7 @@ Config_VIM()
 # Install software
 Config_ENV()
 {
-    sudo apt-get update && sudo apt-get -y install build-essential git zsh cmake
+    sudo apt-get update && sudo apt-get -y install git zsh cmake
     #install oh-my-zsh
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     sed -i "s#^ZSH_THEME=.*#ZSH_THEME=\"ys\"#g" ~/.zshrc
@@ -92,9 +92,9 @@ EOF
 
 main()
 {
-    Config_VIM
     Config_ENV
-    Config_Python
+    Config_VIM
+    # Config_Python
     Config_Git
 
     # cp -a workspace/deployEnv/.tmux.conf $HOME/
