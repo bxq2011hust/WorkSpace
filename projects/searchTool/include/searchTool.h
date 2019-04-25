@@ -58,10 +58,10 @@ class SearchTool
   public:
     explicit SearchTool(int b, const char *passwd="", const char *host = "127.0.0.1", int port = 6379);
     ~SearchTool();
-    string featureToString(std::vector<float> &);
+    string serialize(std::vector<float> &);
     string featureToBinaryString(std::vector<float> &);
     string featureToHashcode(std::vector<float> &);
-    std::vector<float> stringToFeature(string &value);
+    std::vector<float> deserialize(string &value);
     string binaryStringToCode(string &binString);
     string codeToBinaryString(string &binString);
 

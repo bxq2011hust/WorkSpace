@@ -3,6 +3,7 @@
 #include <omp.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdexcept>
 #include "searchTool.h"
 
 using namespace std;

@@ -1,9 +1,11 @@
 #ifndef REDIS_MANAGER_H
 #define REDIS_MANAGER_H
 
-#include <hiredis/hiredis.h>
+#include "hiredis/hiredis.h"
 #include <string>
 #include <vector>
+#include <map>
+#include "spinLock.h"
 
 class RedisManager
 {
@@ -38,6 +40,7 @@ class RedisManager
     std::vector<std::string> hash_gets(const char *hashkey, const char *subkeys);
     std::vector<std::string> hash_getAllKyes(const char *hashkey);
     std::vector<std::pair<std::string, std::string>> hash_getAll(const char *hashkey);
+    std::map<std::string, std::string> hash_getAllOrdered(const char *hashkey);
 
     // set operate binary safe api
     int set_add(const char *setKey,size_t len1, const char *item,size_t len2);
@@ -57,6 +60,7 @@ class RedisManager
     redisContext *pRedisCtx;
     std::string hostname;
     int port;
+    dev::SpinLock mtx;
 };
 
 #endif //REDIS_MANAGER_H

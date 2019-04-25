@@ -13,6 +13,8 @@ description: 记录常用的Docker命令
     - [`docker images` 列出已有镜像](#docker-images-列出已有镜像)
     - [`docker search` 搜素`Docker Hub`上的镜像](#docker-search-搜素docker-hub上的镜像)
     - [`docker pull` 从`Docker Hub`上拉取镜像](#docker-pull-从docker-hub上拉取镜像)
+    - [`docker push` 将本地镜像推送到registry](#docker-push-将本地镜像推送到registry)
+    - [`docker tag` 为源镜像创建一个新标签](#docker-tag-为源镜像创建一个新标签)
     - [`docker run` 运行容器](#docker-run-运行容器)
     - [`docker ps` 列出容器](#docker-ps-列出容器)
     - [`docker stats` 显示容器资源使用统计](#docker-stats-显示容器资源使用统计)
@@ -24,6 +26,7 @@ description: 记录常用的Docker命令
     - [`docker rm` 删除容器](#docker-rm-删除容器)
     - [`docker rmi` 删除镜像](#docker-rmi-删除镜像)
     - [`docker build` 根据`Dockerfile`构建容器](#docker-build-根据dockerfile构建容器)
+    - [`docker login/logout` 登录/登出`Docker registry`](#docker-loginlogout-登录登出docker-registry)
     - [`docker save` 导出镜像](#docker-save-导出镜像)
     - [`docker load` 导入镜像](#docker-load-导入镜像)
     - [`docker export` 导出容器](#docker-export-导出容器)
@@ -165,14 +168,20 @@ b04784fba78d: Pull complete
 Digest: sha256:9a4ec8dac439d00fff31bf41b23902bfd7f7465d4b4c8c950e572e7392f33c66
 Status: Downloaded newer image for hello-world:latest
 ```
+### `docker push` 将本地镜像推送到registry
+
+### `docker tag` 为源镜像创建一个新标签
+```bash
+$ docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+```
 ### `docker run` 运行容器
 
 该指令可以限制容器的`CPU/IO/Memory`使用、端口映射、数据卷挂载等
 
 ```bash
 # 绑定容器的80端口到宿主机127.0.0.1的8080端口
-# 运行基于ubuntu:16.04镜像的容器，命名为test，挂载本机/home/ubuntu/data到容器/data
-$ docker run --name test -it -v /home/ubuntu/data:/data -p 127.0.0.1:8080:80 ubuntu:16.04 bash
+# 运行基于ubuntu:16.04镜像的容器，命名为test，挂载本机/home/ubuntu/data到容器/data，--rm推出后自动删除容器
+$ docker run --name test -it --rm -v /home/ubuntu/data:/data -p 127.0.0.1:8080:80 ubuntu:16.04 bash
 ```
 ### `docker ps` 列出容器
 ```bash
@@ -248,6 +257,20 @@ Deleted: sha256:e77fe66c0e544b6466d3892b931bef1d04a4615b07cb1951c5d598b764b204fd
 # -f指定Dockerfile，否则默认在制定文件夹下寻找Dockerfile
 # 最后指定构建的上下文环境为~/context
 $ docker build -f Dockerfile-ubuntu -t my/test1:latest ~/context
+```
+### `docker login/logout` 登录/登出`Docker registry`
+```bash
+# 登录内部registry 
+$ docker login localhost:8080
+# 登录Docker Hub
+$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: test
+Password:
+Login Succeeded
+# 登出
+$ docker logout
+Removing login credentials for https://index.docker.io/v1/
 ```
 ### `docker save` 导出镜像
 [`docker save`官方文档][docker save] 

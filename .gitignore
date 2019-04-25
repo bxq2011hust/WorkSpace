@@ -45,7 +45,7 @@ build
 *.exe
 *.out
 *.app
-
+.DS_Store
 # video audio
 *.mp*
 *.rmvb
