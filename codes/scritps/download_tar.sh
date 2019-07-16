@@ -6,7 +6,7 @@
 # */20 * * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -c > /data/app/cdn/download.log 2>&1
 
 output_dir=./
-download_repo=FISCO-BCOS
+download_repo=()
 timeout=250
 console_timeout=1000
 
@@ -45,7 +45,7 @@ parse_params()
 while getopts "p:cfwh" option;do
     case $option in
     p) output_dir=$OPTARG;;
-    f) download_repo=('FISCO-BCOS');;
+    f) download_repo+=('FISCO-BCOS');;
     c) download_repo+=('console');;
     h) help;;
     esac
