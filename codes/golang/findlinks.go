@@ -22,7 +22,7 @@ func main() {
 	}
 }
 
-// findLinks发起一个HTTP的GET请求，解析反悔的HTML页面，并返回所有链接
+// findLinks发起一个HTTP的GET请求，解析返回的HTML页面，并返回所有链接
 func findLinks(url string) ([]string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
