@@ -4,3 +4,6 @@
 [submodule "blog-backup/themes/next"]
 	path = blog-backup/themes/next
 	url = https://github.com/iissnan/hexo-theme-next.git
+[submodule "codes/golang/gopl.io"]
+	path = codes/golang/gopl.io
+	url = https://github.com/adonovan/gopl.io.git
