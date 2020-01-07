@@ -40,6 +40,12 @@ LOG_INFO()
     echo -e "\033[32m[INFO] ${content}\033[0m"
 }
 
+LOG_ERROR()
+{
+    local content=${1}
+    echo -e "\033[31m[ERROR] ${content}\033[0m"
+}
+
 parse_params()
 {
 while getopts "p:cfwh" option;do
@@ -47,6 +53,7 @@ while getopts "p:cfwh" option;do
     p) output_dir=$OPTARG;;
     f) download_repo+=('FISCO-BCOS');;
     c) download_repo+=('console');;
+    w) download_repo+=('wecross');;
     h) help;;
     esac
 done
@@ -94,6 +101,56 @@ download_console()
     fi
 }
 
+download_wecross()
+{
+    LOG_INFO "Checking latest release"
+
+    local compatibility_version=
+    local latest_wecross=WeCross.tar.gz
+    local latest_wecross_checksum_file=WeCross.tar.gz.md5
+
+    # fetch latest version
+    if [ -z "${compatibility_version}" ];then
+        compatibility_version=$(curl -s https://api.github.com/repos/WeBankFinTech/WeCross/releases/latest | grep "tag_name"|awk -F '\"' '{print $4}')
+    fi
+
+    local dist_dir=${output_dir}/wecross/releases/download/${compatibility_version}
+    local dist_tmp=${dist_dir}/.tmp/
+    mkdir -p ${dist_tmp}
+    LOG_INFO "Latest release: ${compatibility_version}"
+
+
+    # download md5 checksum
+    curl -LO https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross_checksum_file}
+    if [ ! -e ${latest_wecross_checksum_file} ];then
+        LOG_ERROR "Download WeCross checksum failed! URL: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross_checksum_file}"
+        exit 1
+    fi
+    cp ${latest_wecross_checksum_file} ${dist_tmp}
+    
+    # download wecross tar
+    cd ${dist_tmp}
+    if [ ! -e ${latest_wecross} ] || [ -z "$(md5sum -c ${latest_wecross_checksum_file}|grep OK)" ];then
+        LOG_INFO "Download from: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross}"
+        curl -C - -LO https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross}
+
+        # check checksum
+        if [ -z "$(md5sum -c ${latest_wecross_checksum_file}|grep OK)" ];then
+            LOG_ERROR "Download WeCross package failed! URL: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross}"
+            rm -f ${latest_wecross}
+            cd -
+            exit 1
+        fi
+
+        # publish
+        cp -f ${latest_wecross} ${latest_wecross_checksum_file} ../
+
+    else
+        LOG_INFO "Latest release ${latest_wecross} exists."
+    fi
+    cd -
+}
+
 main()
 {
     for repo in ${download_repo[*]} 
@@ -104,6 +161,9 @@ main()
             ;;
         console)
             download_console
+            ;;
+        wecross)
+            download_wecross
             ;;
         *)
             echo "unknow repo"
