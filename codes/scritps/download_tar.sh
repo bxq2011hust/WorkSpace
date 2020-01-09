@@ -5,11 +5,13 @@
 # */20 * * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -f > /data/app/cdn/download.log 2>&1
 # */20 * * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -c > /data/app/cdn/download.log 2>&1
 # */20 * * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -w > /data/app/cdn/download.log 2>&1
+LANG=en_US.utf8
 
 output_dir=./
 download_repo=()
 timeout=250
 console_timeout=1000
+wecross_repo=WeBankFinTech
 
 #set -e
 
@@ -105,47 +107,39 @@ download_console()
 
 download_wecross()
 {
-    LOG_INFO "Checking WeCross latest release"
-
-    local compatibility_version=
+    local compatibility_version=${1}
+    local release_url=https://github.com/${wecross_repo}/WeCross/releases/download/
     local latest_wecross=WeCross.tar.gz
     local latest_wecross_checksum_file=WeCross.tar.gz.md5
-
-    # fetch latest version
-    if [ -z "${compatibility_version}" ];then
-        compatibility_version=$(curl -s https://api.github.com/repos/WeBankFinTech/WeCross/releases/latest | grep "tag_name"|awk -F '\"' '{print $4}')
-    fi
-
     local dist_dir=${output_dir}/wecross/releases/download/${compatibility_version}
     local dist_tmp=${dist_dir}/.tmp/
     mkdir -p ${dist_tmp}
-    LOG_INFO "Latest release: ${compatibility_version}"
+    LOG_INFO "Download WeCross Release: ${compatibility_version}"
 
 
     # download md5 checksum
-    curl -LO https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross_checksum_file}
+    curl -LO ${release_url}/${compatibility_version}/${latest_wecross_checksum_file}
     if [ ! -e ${latest_wecross_checksum_file} ];then
-        LOG_ERROR "Download WeCross checksum failed! URL: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross_checksum_file}"
-        exit 1
+        LOG_ERROR "Download WeCross checksum failed! URL: ${release_url}/${compatibility_version}/${latest_wecross_checksum_file}"
+        return
     fi
     cp ${latest_wecross_checksum_file} ${dist_tmp}
     
     # download wecross tar
     cd ${dist_tmp}
     if [ ! -e ${latest_wecross} ] || [ -z "$(md5sum -c ${latest_wecross_checksum_file}|grep OK)" ];then
-        LOG_INFO "Download from: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross}"
-        curl -C - -LO https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross}
+        LOG_INFO "Download from: ${release_url}/${compatibility_version}/${latest_wecross}"
+        curl -LO ${release_url}/${compatibility_version}/${latest_wecross}
 
         # check checksum
         if [ -z "$(md5sum -c ${latest_wecross_checksum_file}|grep OK)" ];then
-            LOG_ERROR "Download WeCross package failed! URL: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross}"
-            rm -f ${latest_wecross}
+            LOG_ERROR "Download WeCross package failed! URL: ${release_url}/${compatibility_version}/${latest_wecross}"
             cd -
             return
         fi
 
     else
-        LOG_INFO "Latest release ${latest_wecross} exists."
+        LOG_INFO "Release ${latest_wecross} exists."
     fi
 
     # publish
@@ -155,49 +149,60 @@ download_wecross()
     cd -
 }
 
+download_all_wecross()
+{
+    LOG_INFO "Checking all WeCross releases"
+
+    local compatibility_versions=
+
+    # fetch latest version
+    if [ -z "${compatibility_versions}" ];then
+        compatibility_versions=($(curl -s https://api.github.com/repos/${wecross_repo}/WeCross/releases | grep "tag_name"|awk -F '\"' '{print $4}'))
+    fi
+
+    for compatibility_version in ${compatibility_versions[@]}
+	do    
+        download_wecross ${compatibility_version}
+    done
+}
+
 download_wecross_console()
 {
     LOG_INFO "Checking WeCross-Console latest release"
 
-    local compatibility_version=
+    local compatibility_version=${1}
+    local download_url=https://github.com/${wecross_repo}/WeCross-Console/releases/download/
     local latest_wecross=WeCross-Console.tar.gz
     local latest_wecross_checksum_file=WeCross-Console.tar.gz.md5
-
-    # fetch latest version
-    if [ -z "${compatibility_version}" ];then
-        compatibility_version=$(curl -s https://api.github.com/repos/WeBankFinTech/WeCross-Console/releases/latest | grep "tag_name"|awk -F '\"' '{print $4}')
-    fi
-
     local dist_dir=${output_dir}/wecross-console/releases/download/${compatibility_version}
     local dist_tmp=${dist_dir}/.tmp/
     mkdir -p ${dist_tmp}
-    LOG_INFO "Latest release: ${compatibility_version}"
+    LOG_INFO "Download WeCross-Console release: ${compatibility_version}"
 
 
     # download md5 checksum
-    curl -LO https://github.com/WeBankFinTech/WeCross-Console/releases/download/${compatibility_version}/${latest_wecross_checksum_file}
+    curl -LO ${download_url}/${compatibility_version}/${latest_wecross_checksum_file}
     if [ ! -e ${latest_wecross_checksum_file} ];then
-        LOG_ERROR "Download WeCross-Console checksum failed! URL: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross_checksum_file}"
-        exit 1
+        LOG_ERROR "Download WeCross-Console checksum failed! URL: ${download_url}/${compatibility_version}/${latest_wecross_checksum_file}"
+        return
     fi
     cp ${latest_wecross_checksum_file} ${dist_tmp}
     
     # download wecross tar
     cd ${dist_tmp}
     if [ ! -e ${latest_wecross} ] || [ -z "$(md5sum -c ${latest_wecross_checksum_file}|grep OK)" ];then
-        LOG_INFO "Download from: https://github.com/WeBankFinTech/WeCross-Console/releases/download/${compatibility_version}/${latest_wecross}"
-        curl -C - -LO https://github.com/WeBankFinTech/WeCross-Console/releases/download/${compatibility_version}/${latest_wecross}
+        LOG_INFO "Download from: ${download_url}/${compatibility_version}/${latest_wecross}"
+        curl -LO ${download_url}/${compatibility_version}/${latest_wecross}
 
         # check checksum
         if [ -z "$(md5sum -c ${latest_wecross_checksum_file}|grep OK)" ];then
-            LOG_ERROR "Download WeCross console package failed! URL: https://github.com/WeBankFinTech/WeCross/releases/download/${compatibility_version}/${latest_wecross}"
-            rm -f ${latest_wecross}
+            LOG_ERROR "Download WeCross console package failed! URL: ${download_url}/${compatibility_version}/${latest_wecross}"
             cd -
             return
         fi
 
     else
-        LOG_INFO "Latest release ${latest_wecross} exists."
+        LOG_INFO "Release ${latest_wecross} exists."
     fi
 
     # publish
@@ -205,6 +210,23 @@ download_wecross_console()
         cp -f ${latest_wecross} ${latest_wecross_checksum_file} ../
     fi
     cd -
+}
+
+download_all_wecross_console()
+{
+    LOG_INFO "Checking all WeCross-Console releases"
+
+    local compatibility_versions=
+
+    # fetch latest version
+    if [ -z "${compatibility_versions}" ];then
+        compatibility_versions=($(curl -s https://api.github.com/repos/${wecross_repo}/WeCross-Console/releases | grep "tag_name"|awk -F '\"' '{print $4}'))
+    fi
+
+    for compatibility_version in ${compatibility_versions[@]}
+	do    
+        download_wecross_console ${compatibility_version}
+    done
 }
 
 main()
@@ -219,8 +241,8 @@ main()
             download_console
             ;;
         wecross)
-            download_wecross
-            download_wecross_console
+            download_all_wecross
+            download_all_wecross_console
             ;;
         *)
             echo "unknow repo"
