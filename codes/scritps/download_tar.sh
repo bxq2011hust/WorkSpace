@@ -142,11 +142,13 @@ download_wecross()
             exit 1
         fi
 
-        # publish
-        cp -f ${latest_wecross} ${latest_wecross_checksum_file} ../
-
     else
         LOG_INFO "Latest release ${latest_wecross} exists."
+    fi
+
+    # publish
+    if [ ! -e ../${latest_wecross_checksum_file} ] || [ ! -z "$(diff -q ${latest_wecross_checksum_file}  ../${latest_wecross_checksum_file})" ]; then
+        cp -f ${latest_wecross} ${latest_wecross_checksum_file} ../
     fi
     cd -
 }
