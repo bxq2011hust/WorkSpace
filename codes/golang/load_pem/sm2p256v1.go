@@ -1,0 +1,26 @@
+package main
+
+import (
+	"github.com/bxq2011hust/crypto/elliptic"
+	"math/big"
+	"sync"
+)
+
+var initonce sync.Once
+var sm2p256v1 *elliptic.CurveParams
+
+func InitSm2p256v1() {
+	sm2p256v1 = &elliptic.CurveParams{Name: "secp256k1"}
+	sm2p256v1.BitSize = 256
+	sm2p256v1.P, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16)
+	sm2p256v1.A, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC", 16)
+	sm2p256v1.B, _ = new(big.Int).SetString("28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93", 16)
+	sm2p256v1.N, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123", 16)
+	sm2p256v1.Gx, _ = new(big.Int).SetString("32C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7", 16)
+	sm2p256v1.Gy, _ = new(big.Int).SetString("BC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0", 16)
+}
+
+func Sm2p256v1() elliptic.Curve {
+	initonce.Do(InitSm2p256v1)
+	return sm2p256v1
+}

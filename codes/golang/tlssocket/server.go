@@ -12,7 +12,8 @@ import (
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	cer, err := tls.LoadX509KeyPair("certs_rsa/sdk.crt", "certs_rsa/sdk.key")
+	// cer, err := tls.LoadX509KeyPair("certs_ec_node/node.crt", "certs_ec_node/node.key")
+	cer, err := tls.LoadX509KeyPair("certs_rsa/node.crt", "certs_rsa/node.key")
 	if err != nil {
 		log.Println(err)
 		return

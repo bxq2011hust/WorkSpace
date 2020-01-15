@@ -1,10 +1,12 @@
 package main
 
 import (
-	"crypto/tls"
 	"crypto/x509"
+	// "crypto/tls"
 	"io/ioutil"
 	"log"
+
+	"github.com/bxq2011hust/fisco-tls/crypto/tls"
 )
 
 // https://github.com/denji/golang-tls
@@ -12,7 +14,7 @@ func main() {
 	log.SetFlags(log.Lshortfile)
 
 	roots := x509.NewCertPool()
-	rootPEM, err := ioutil.ReadFile("certs_rsa/ca.crt")
+	rootPEM, err := ioutil.ReadFile("certs_ec_node/ca.crt")
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +27,7 @@ func main() {
 		RootCAs: roots,
 		//InsecureSkipVerify: true,
 	}
-	conn, err := tls.Dial("tcp", "127.0.0.1:7878", conf)
+	conn, err := tls.Dial("tcp", "127.0.0.1:20200", conf)
 	if err != nil {
 		log.Println(err)
 		return
