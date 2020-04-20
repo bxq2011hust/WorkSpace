@@ -5,6 +5,7 @@
 # */20 * * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -f > /data/app/cdn/download.log 2>&1
 # */20 * * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -c > /data/app/cdn/download.log 2>&1
 # */20 * * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -w > /data/app/cdn/download.log 2>&1
+# * */4 * * * bash /data/app/cdn/download_tar.sh -p /data/app/cdn/ -l > /data/app/cdn/download.log 2>&1
 LANG=en_US.utf8
 
 output_dir=./
@@ -58,6 +59,7 @@ while getopts "p:cfwh" option;do
     f) download_repo+=('FISCO-BCOS');;
     c) download_repo+=('console');;
     w) download_repo+=('wecross');;
+    l) download_repo+=('LargeFiles');;
     h) help;;
     esac
 done
@@ -105,6 +107,15 @@ download_console()
     fi
 }
 
+download_largefiles()
+{
+    if [ -d "deps" ]; then
+        cd deps && git pull
+    else
+        git clone https://github.com/FISCO-BCOS/LargeFiles.git deps
+    fi
+}
+
 download_wecross()
 {
     local compatibility_version=${1}
@@ -115,7 +126,6 @@ download_wecross()
     local dist_tmp=${dist_dir}/.tmp/
     mkdir -p ${dist_tmp}
     LOG_INFO "Download WeCross Release: ${compatibility_version}"
-
 
     # download md5 checksum
     curl -LO ${release_url}/${compatibility_version}/${latest_wecross_checksum_file}
@@ -239,6 +249,9 @@ main()
             ;;
         console)
             download_console
+            ;;
+        LargeFiles)
+            download_largefiles
             ;;
         wecross)
             download_all_wecross
