@@ -53,7 +53,7 @@ LOG_ERROR()
 
 parse_params()
 {
-while getopts "p:cfwh" option;do
+while getopts "p:cfwlh" option;do
     case $option in
     p) output_dir=$OPTARG;;
     f) download_repo+=('FISCO-BCOS');;
@@ -110,8 +110,10 @@ download_console()
 download_largefiles()
 {
     if [ -d "deps" ]; then
+        LOG_INFO "cd deps && git pull"
         cd deps && git pull
     else
+        LOG_INFO "git clone https://github.com/FISCO-BCOS/LargeFiles.git deps"
         git clone https://github.com/FISCO-BCOS/LargeFiles.git deps
     fi
 }
