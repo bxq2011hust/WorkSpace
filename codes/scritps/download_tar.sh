@@ -71,7 +71,7 @@ download_fisco_artifacts()
     local from=https://github.com/FISCO-BCOS/FISCO-BCOS/releases/download/v${version}
     local to=${output_dir}/fisco-bcos/releases/download/v${version}
     mkdir -p ${to}
-    local tars=(fisco-bcos.tar.gz fisco-bcos-gm.tar.gz fisco-bcos-macOS.tar.gz)
+    local tars=(fisco-bcos.tar.gz fisco-bcos-gm.tar.gz fisco-bcos-macOS.tar.gz build_chain.sh)
     for file in ${tars[*]}
     do
         curl -Lo ${to}/${file} ${from}/${file} -m ${timeout} || failed_clean ${to}
