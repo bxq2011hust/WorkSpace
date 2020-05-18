@@ -29,7 +29,7 @@ help() {
     cat << EOF
 Usage:
     -p <Download Path>                  [Required]
-    -f <Download fisco-bcos>            Include fisco-bcos.tar.gz fisco-bcos-gm.tar.gz fisco-bcos-macOS.tar.gz
+    -f <Download fisco-bcos>            Include fisco-bcos.tar.gz fisco-bcos-macOS.tar.gz
     -c <Download console>               Include console.tar.gz
     -w <Download WeCross>               Include WeCross.tar.gz WeCross-Console.tar.gz
     -h Help
@@ -71,7 +71,7 @@ download_fisco_artifacts()
     local from=https://github.com/FISCO-BCOS/FISCO-BCOS/releases/download/v${version}
     local to=${output_dir}/fisco-bcos/releases/download/v${version}
     mkdir -p ${to}
-    local tars=(fisco-bcos.tar.gz fisco-bcos-gm.tar.gz fisco-bcos-macOS.tar.gz build_chain.sh)
+    local tars=(build_chain.sh fisco-bcos.tar.gz fisco-bcos-macOS.tar.gz)
     for file in ${tars[*]}
     do
         curl -Lo ${to}/${file} ${from}/${file} -m ${timeout} || failed_clean ${to}
