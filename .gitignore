@@ -9,6 +9,7 @@
 *.so
 *.dll
 *.dylib
+*.out
 
 # Qt-es
 
@@ -49,3 +50,7 @@ build
 # video audio
 *.mp*
 *.rmvb
+
+# wasm
+*.wasm
+*.wat
