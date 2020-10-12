@@ -54,3 +54,4 @@ build
 # wasm
 *.wasm
 *.wat
+*.html

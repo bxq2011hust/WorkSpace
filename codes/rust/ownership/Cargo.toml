@@ -1,5 +1,5 @@
 [package]
-name = "hello_cargo"
+name = "ownership"
 version = "0.1.0"
 authors = ["bxq2011hust <bxq2011hust@qq.com>"]
 edition = "2018"
